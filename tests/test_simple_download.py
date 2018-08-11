@@ -1,5 +1,6 @@
 import unittest
 from SimpleDownload import downloader
+from urllib.error import URLError
 
 import os
 
@@ -21,6 +22,18 @@ class TestSimpleDownload(unittest.TestCase):
         arg = 'https://www.example.com/+++1***2300+++'
         self.downloader = downloader.Downloader(arg)
         self.assertEqual(self.downloader.BASE_URL, 'https://www.example.com')
+
+    def test_base_url_valid_connection(self):
+        arg = 'https://google.com'
+        self.downloader = downloader.Downloader(arg)
+        http_response_code = self.downloader.validate_connection()
+        self.assertGreaterEqual(http_response_code, 200)
+        self.assertLessEqual(http_response_code, 299)
+
+    def test_connection_exception_on_(self):
+        with self.assertRaises(URLError):
+            arg = 'https://non-existing-url-dsad.com/'
+            dl = downloader.Downloader(arg)
 
     @unittest.skip("complete after main functions exist")
     def test_except_on_invalid_argument(self):

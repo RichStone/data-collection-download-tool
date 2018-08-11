@@ -1,5 +1,7 @@
 import sys
 from urllib.parse import urlsplit, urlunsplit
+import urllib.request
+from urllib.error import URLError
 
 import validators
 
@@ -14,6 +16,7 @@ class Downloader:
         self.CONCAT_DELIMITER = '+++'
         self.RANGE_DELIMITER = '***'
         self.BASE_URL = self.extract_base_url()
+        self.validate_connection()
 
     def validate_user_input(self):
 
@@ -28,6 +31,14 @@ class Downloader:
         split_url = urlsplit(self.user_input)
         base_url = urlunsplit((split_url.scheme, split_url.netloc, "", "", ""))
         return base_url
+
+    def validate_connection(self):
+        print(self.BASE_URL)
+        try:
+            return urllib.request.urlopen(self.BASE_URL).getcode()
+        except URLError:
+            raise URLError('Terminate program because connection could not be established with the given base URL '
+                           + self.BASE_URL)
 
 
 if __name__ == 'main':
