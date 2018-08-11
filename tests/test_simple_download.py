@@ -16,11 +16,11 @@ class TestSimpleDownload(unittest.TestCase):
     def test_extract_base_url(self):
         arg = 'http://example.com/+++1***2300+++'
         self.downloader = downloader.Downloader(arg)
-        self.assertEqual(downloader.BASE_URL, 'http://example.com/')
+        self.assertEqual(self.downloader.BASE_URL, 'http://example.com')
 
         arg = 'https://www.example.com/+++1***2300+++'
         self.downloader = downloader.Downloader(arg)
-        self.assertEqual(downloader.BASE_URL, 'https://www.example.com/')
+        self.assertEqual(self.downloader.BASE_URL, 'https://www.example.com')
 
     @unittest.skip("complete after main functions exist")
     def test_except_on_invalid_argument(self):
