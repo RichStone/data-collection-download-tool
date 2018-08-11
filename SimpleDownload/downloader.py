@@ -16,11 +16,13 @@ class Downloader:
 
         def validate_base_url():
             if validators.url(self.user_input) is validators.utils.ValidationFailure:
-                raise ValueError('Base URL is malformed, please keep to the following format: `http://www.example.com/')
+                raise ValueError('Base URL is malformed, please keep to the following format: "http://www.example.com/" ')
 
         def validate_concat_sequences():
             pass
 
+    def extract_base_url(self):
+        pass
 
 
 if __name__ == 'main':
