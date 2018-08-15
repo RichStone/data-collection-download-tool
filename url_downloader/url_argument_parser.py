@@ -48,7 +48,9 @@ class Parser:
         ranges = []
         extracted_ranges = re.findall(r'(?<=' + self.concat_delimiter_escaped + ').+?(?=' + self.concat_delimiter_escaped + ')',
                                       custom_url_part)
-        if extracted_ranges is not []:
+        if not extracted_ranges:
+            raise ValueError('You did not provide the accepted syntax for the URL path.')
+        else:
             for extracted_range in extracted_ranges:
                 if self.range_delimiter in extracted_range:
                     range_obj = dict()

@@ -68,24 +68,11 @@ class TestUrlParser(unittest.TestCase):
         ]
         self.assertEqual(ranges, self.parser.extract_ranges(custom_url_part))
 
-    @unittest.skip('activate after finishing parser')
     def test_except_on_invalid_concat_input(self):
         with self.assertRaises(ValueError):
             # 'incorrect concat delimiter'
-            arg = 'https://xkcd.com/+++1***2300+++'
-            self.parser = url_argument_parser.Parser(arg)
-
-        with self.assertRaises(ValueError):
-            # 'incorrect range delimiter'
-            arg = 'https://xkcd.com/##1++2300##'
-            self.parser = url_argument_parser.Parser(arg)
-
-    @unittest.skip("find correct syntax")
-    def test_except_without_argument(self):
-        with self.assertRaises(ValueError):
-            # something like this:
-            # https://stackoverflow.com/a/3781869/5925094
-            os.system("downloader.py arg")
+            user_input = 'https://xkcd.com/sdfgsdfg'
+            self.parser = self.parser.extract_ranges(user_input)
 
 
 if __name__ == '__main__':
