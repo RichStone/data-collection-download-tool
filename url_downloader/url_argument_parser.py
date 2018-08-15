@@ -1,14 +1,9 @@
-import sys
 from urllib.parse import urlsplit, urlunsplit
 import urllib.request
 from urllib.error import URLError
 import re
 
 import validators
-
-# examples:
-# python3 simple_download.py http://xkcd.com/+++1***2300+++
-# python3 simple_download.py https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed+++0001***0928+++.xml.gz
 
 
 class Parser:
@@ -78,10 +73,3 @@ class Parser:
             split_index += 2
         clean_url = ''.join(s for s in split_url)
         return clean_url
-
-
-if __name__ == 'main':
-    try:
-        passed_argument = sys.argv[1]
-    except IndexError:
-        print('You did not pass an URL path to the script execution.')
