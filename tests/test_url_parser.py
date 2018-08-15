@@ -7,42 +7,66 @@ import os
 
 class TestUrlParser(unittest.TestCase):
     def setUp(self):
-        pass
+        self.parser = url_argument_parser.Parser()
 
     def test_argument_received(self):
-        arg = 'http://example.com/+++1***2300+++'
-        self.parser = url_argument_parser.Parser(arg)
-        self.assertIsNotNone(self.parser.user_input, '')
+        user_input = ''
+        with self.assertRaises(ValueError):
+            self.parser.build_clean_url(user_input)
+
+        user_input = None
+        with self.assertRaises(ValueError):
+            self.parser.build_clean_url(user_input)
+
+        user_input = 13245
+        with self.assertRaises(ValueError):
+            self.parser.build_clean_url(user_input)
 
     def test_extract_base_url(self):
-        arg = 'http://example.com/+++1***2300+++'
-        self.parser = url_argument_parser.Parser(arg)
-        self.assertEqual(self.parser.BASE_URL, 'http://example.com')
+        user_input = 'http://example.com/+++1***2300+++'
+        base_url = self.parser.extract_base_url(user_input)
+        self.assertEqual(base_url, 'http://example.com')
 
-        arg = 'https://www.example.com/+++1***2300+++'
-        self.parser = url_argument_parser.Parser(arg)
-        self.assertEqual(self.parser.BASE_URL, 'https://www.example.com')
+        user_input = 'https://www.example.com/+++1***2300+++'
+        base_url = self.parser.extract_base_url(user_input)
+        self.assertEqual(base_url, 'https://www.example.com')
 
     def test_base_url_valid_connection(self):
-        arg = 'https://google.com'
-        self.parser = url_argument_parser.Parser(arg)
-        http_response_code = self.parser.validate_connection()
-        self.assertGreaterEqual(http_response_code, 200)
-        self.assertLessEqual(http_response_code, 299)
+        url = 'https://google.com'
+        http_response_code = self.parser.validate_base_url_connection(url)
+        self.assertEqual(http_response_code, 200)
 
     def test_connection_exception_on_(self):
         with self.assertRaises(URLError):
-            arg = 'https://non-existing-url-dsad.com/'
-            dl = url_argument_parser.Parser(arg)
+            url = 'https://non-existing-url-dsad.com/'
+            self.parser.validate_base_url_connection(url)
 
     def test_extract_custom_part(self):
-        arg = 'http://example.com/+++1***2300+++'
-        self.parser = url_argument_parser.Parser(arg)
-        self.assertEqual('/+++1***2300+++', self.parser.extract_custom_part())
+        user_input = 'http://example.com/++1**2300++'
+        self.assertEqual('/++1**2300++', self.parser.extract_custom_url_part(user_input))
 
-        arg = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed+++0001***0928+++.xml.gz'
-        self.parser = url_argument_parser.Parser(arg)
-        self.assertEqual('/pubmed/baseline/pubmed+++0001***0928+++.xml.gz', self.parser.extract_custom_part())
+        user_input = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed+++0001***0928+++.xml.gz'
+        self.assertEqual('/pubmed/baseline/pubmed+++0001***0928+++.xml.gz', self.parser.extract_custom_url_part(user_input))
+
+    def test_extract_ranges(self):
+        custom_url_part = '/pubmed++0001**0928++.xml.gz'
+        ranges = [{
+            'start_from': '0001',
+            'end_at': '0928'
+        }]
+        self.assertEqual(ranges, self.parser.extract_ranges(custom_url_part))
+
+        custom_url_part = 'http://datagoodie.com/month/++1**12++/day/++1**30++'
+        ranges = [{
+            'start_from': '1',
+            'end_at': '12'
+        },
+        {
+            'start_from': '1',
+            'end_at': '30'
+        }
+        ]
+        self.assertEqual(ranges, self.parser.extract_ranges(custom_url_part))
 
     @unittest.skip('activate after finishing parser')
     def test_except_on_invalid_concat_input(self):
