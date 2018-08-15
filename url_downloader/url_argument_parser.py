@@ -19,17 +19,18 @@ class Parser:
         self.concat_delimiter_escaped = '\+\+'
         self.range_delimiter_escaped = '\*\*'
 
-    def build_clean_url(self, user_input):
+        self.ranges = dict()
+        self.clean_url = ''
+
+    def get_ranges_and_clean_start_url(self, user_input):
         if user_input == '' or user_input is None or not isinstance(user_input, str):
             raise ValueError('Error: you have to pass a valid String to the parser.')
         base_url = self.extract_base_url(user_input)
         self.validate_base_url_connection(base_url)
-        custom_url_part = self.extract_custom_url_part(user_input)
-        ranges = self.extract_ranges(custom_url_part)
 
-    def validate_user_input(self, user_input):
-        def validate_concat_sequences():
-            pass
+        custom_url_part = self.extract_custom_url_part(user_input)
+        self.ranges = self.extract_ranges(custom_url_part)
+        self.clean_url = self.build_clean_url(self.ranges, user_input)
 
     def extract_base_url(self, user_input):
         split_url = urlsplit(user_input)
@@ -55,6 +56,7 @@ class Parser:
                 if self.range_delimiter in extracted_range:
                     range_obj = dict()
                     split_range = extracted_range.split(self.range_delimiter)
+                    # TODO: check on split every range value to be numeric
                     range_obj['start_from'] = split_range[0]
                     range_obj['end_at'] = split_range[1]
                     ranges.append(range_obj)
@@ -67,14 +69,19 @@ class Parser:
             raise URLError('Terminate program because connection could not be established with the given base URL '
                            + base_url)
 
+    def build_clean_url(self, ranges, user_input):
+        split_url = user_input.split(self.concat_delimiter)
+        # TODO: comment this crazy stuff
+        split_index = 1
+        for loop_index, r in enumerate(ranges):
+            split_url[split_index] = ranges[loop_index]['start_from']
+            split_index += 2
+        clean_url = ''.join(s for s in split_url)
+        return clean_url
+
 
 if __name__ == 'main':
     try:
         passed_argument = sys.argv[1]
     except IndexError:
         print('You did not pass an URL path to the script execution.')
-    except:
-        # TODO: when all errors are known, handle properly
-        # 1. IndexError, when no argument passed
-        print('Unexpected Error: ' + sys.exc_info()[0])
-

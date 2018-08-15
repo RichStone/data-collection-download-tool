@@ -12,15 +12,15 @@ class TestUrlParser(unittest.TestCase):
     def test_argument_received(self):
         user_input = ''
         with self.assertRaises(ValueError):
-            self.parser.build_clean_url(user_input)
+            self.parser.get_ranges_and_clean_start_url(user_input)
 
         user_input = None
         with self.assertRaises(ValueError):
-            self.parser.build_clean_url(user_input)
+            self.parser.get_ranges_and_clean_start_url(user_input)
 
         user_input = 13245
         with self.assertRaises(ValueError):
-            self.parser.build_clean_url(user_input)
+            self.parser.get_ranges_and_clean_start_url(user_input)
 
     def test_extract_base_url(self):
         user_input = 'http://example.com/+++1***2300+++'
@@ -45,8 +45,8 @@ class TestUrlParser(unittest.TestCase):
         user_input = 'http://example.com/++1**2300++'
         self.assertEqual('/++1**2300++', self.parser.extract_custom_url_part(user_input))
 
-        user_input = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed+++0001***0928+++.xml.gz'
-        self.assertEqual('/pubmed/baseline/pubmed+++0001***0928+++.xml.gz', self.parser.extract_custom_url_part(user_input))
+        user_input = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed++0001**0928++.xml.gz'
+        self.assertEqual('/pubmed/baseline/pubmed++0001**0928++.xml.gz', self.parser.extract_custom_url_part(user_input))
 
     def test_extract_ranges(self):
         custom_url_part = '/pubmed++0001**0928++.xml.gz'
@@ -73,6 +73,16 @@ class TestUrlParser(unittest.TestCase):
             # 'incorrect concat delimiter'
             user_input = 'https://xkcd.com/sdfgsdfg'
             self.parser = self.parser.extract_ranges(user_input)
+
+    def test_build_clean_start_url(self):
+        parser_url = self.parser.get_ranges_and_clean_start_url('https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed++0001**0928++.xml.gz')
+        clean_start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed0001.xml.gz'
+        self.assertEqual(clean_start_url, self.parser.clean_url)
+
+        parser_url = self.parser.get_ranges_and_clean_start_url('http://datagoodie.com/month/++1**12++/day/++1**30++')
+        clean_start_url = 'http://datagoodie.com/month/1/day/1'
+        self.assertEqual(clean_start_url, self.parser.clean_url)
+
 
 
 if __name__ == '__main__':
