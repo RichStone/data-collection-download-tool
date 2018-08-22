@@ -84,6 +84,22 @@ class TestUrlParser(unittest.TestCase):
         self.assertEqual(clean_start_url, self.parser.clean_url)
 
 
+class TestDownloader(unittest.TestCase):
+    def setUp(self):
+        # self.parser = downloader.Downloader()
+        pass
+
+    def tearDown(self):
+        # TODO: delete everything from downloads if exists
+        pass
+
+    def test_download_first_file_with_clean_simple_start_url(self):
+        url = 'https://xkcd.com/1'
+        download_target_file_name = 'xkcd1.html'
+        # get first file in
+        download_actual_file_name = os.listdir(os.getcwd() + '/downloads')[0]
+        self.assertEqual(download_target_file_name, download_actual_file_name)
+
 
 if __name__ == '__main__':
     unittest.main()
