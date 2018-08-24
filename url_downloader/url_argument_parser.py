@@ -13,6 +13,7 @@ class Parser:
         # regex needs delimiters to be escaped
         self.concat_delimiter_escaped = '\+\+'
         self.range_delimiter_escaped = '\*\*'
+        self.final_url_delimiter = '###'
 
         self.ranges = dict()
         self.clean_url = ''
@@ -25,7 +26,7 @@ class Parser:
 
         custom_url_part = self.extract_custom_url_part(user_input)
         self.ranges = self.extract_ranges(custom_url_part)
-        self.clean_url = self.build_clean_url(self.ranges, user_input)
+        self.clean_url = self.build_final_url(self.ranges, user_input)
 
     def extract_base_url(self, user_input):
         split_url = urlsplit(user_input)
@@ -64,12 +65,11 @@ class Parser:
             raise URLError('Terminate program because connection could not be established with the given base URL '
                            + base_url)
 
-    def build_clean_url(self, ranges, user_input):
+    def build_final_url(self, ranges, user_input):
         split_url = user_input.split(self.concat_delimiter)
-        # TODO: comment this crazy stuff
         split_index = 1
         for loop_index, r in enumerate(ranges):
-            split_url[split_index] = ranges[loop_index]['start_from']
+            split_url[split_index] = self.final_url_delimiter
             split_index += 2
         clean_url = ''.join(s for s in split_url)
         return clean_url

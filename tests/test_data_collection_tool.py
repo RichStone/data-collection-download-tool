@@ -74,14 +74,14 @@ class TestUrlParser(unittest.TestCase):
             user_input = 'https://xkcd.com/sdfgsdfg'
             self.parser = self.parser.extract_ranges(user_input)
 
-    def test_build_clean_start_url(self):
-        parser_url = self.parser.get_ranges_and_clean_start_url('https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed++0001**0928++.xml.gz')
-        clean_start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed0001.xml.gz'
-        self.assertEqual(clean_start_url, self.parser.clean_url)
+    def test_build_start_url(self):
+        parser_url = self.parser.get_ranges_and_clean_start_url('https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n++0001**0928++.xml.gz')
+        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
+        self.assertEqual(start_url, self.parser.clean_url)
 
         parser_url = self.parser.get_ranges_and_clean_start_url('http://datagoodie.com/month/++1**12++/day/++1**30++')
-        clean_start_url = 'http://datagoodie.com/month/1/day/1'
-        self.assertEqual(clean_start_url, self.parser.clean_url)
+        start_url = 'http://datagoodie.com/month/###/day/###'
+        self.assertEqual(start_url, self.parser.clean_url)
 
 
 class TestDownloader(unittest.TestCase):
