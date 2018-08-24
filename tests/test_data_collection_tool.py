@@ -1,5 +1,5 @@
 import unittest
-from url_downloader import url_argument_parser
+from url_downloader import url_argument_parser, downloader
 from urllib.error import URLError
 
 import os
@@ -86,13 +86,39 @@ class TestUrlParser(unittest.TestCase):
 
 class TestDownloader(unittest.TestCase):
     def setUp(self):
-        # self.parser = downloader.Downloader()
-        pass
+        self.dl_handler = downloader.Downloader(url_argument_parser.Parser().final_url_wildcard)
 
     def tearDown(self):
         # TODO: delete everything from downloads if exists
         pass
 
+    def test_build_download_start_url(self):
+        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
+        download_range = [
+            {'start_from': '0001', 'end_at': '0928'},
+        ]
+        clean_download_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n0001.xml.gz'
+        parsed_url = self.dl_handler.build_download_url(start_url, download_range)
+        self.assertEqual(clean_download_url, parsed_url)
+
+        start_url = 'http://datagoodie.com/month/###/day/###'
+        download_range = [
+            {'start_from': '1', 'end_at': '12'},
+            {'start_from': '1', 'end_at': '30'}
+        ]
+        clean_download_url = 'http://datagoodie.com/month/1/day/1'
+        parsed_url = self.dl_handler.build_download_url(start_url, download_range)
+        self.assertEqual(clean_download_url, parsed_url)
+
+    @unittest.skip('later')
+    def test_ranges_delimiters_should_be_same_between_parser_and_downloader(self):
+        pass
+
+    @unittest.skip('later')
+    def test_should_raise_exception_gracefully_when_url_not_downloadable(self):
+        pass
+
+    @unittest.skip('later')
     def test_download_first_file_with_clean_simple_start_url(self):
         url = 'https://xkcd.com/1'
         download_target_file_name = 'xkcd1.html'
