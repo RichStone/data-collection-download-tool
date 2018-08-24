@@ -13,7 +13,7 @@ class Parser:
         # regex needs delimiters to be escaped
         self.concat_delimiter_escaped = '\+\+'
         self.range_delimiter_escaped = '\*\*'
-        self.final_url_delimiter = '###'
+        self.final_url_wildcard = '###'
 
         self.ranges = dict()
         self.clean_url = ''
@@ -66,10 +66,18 @@ class Parser:
                            + base_url)
 
     def build_final_url(self, ranges, user_input):
+        """
+        Splits the custom url at the concat_delimiter. From this split always the range integer remains at every second
+        position of the split list. In the loop this unnecessary remainder is replaced by a wildcard.
+
+        :param ranges: dict of int - ranges to download
+        :param user_input: string - custom url to be dissected
+        :return: string - URL with wildcard values for ranges that can be finally used in downloader.py
+        """
         split_url = user_input.split(self.concat_delimiter)
         split_index = 1
-        for loop_index, r in enumerate(ranges):
-            split_url[split_index] = self.final_url_delimiter
+        for r in ranges:
+            split_url[split_index] = self.final_url_wildcard
             split_index += 2
         clean_url = ''.join(s for s in split_url)
         return clean_url
