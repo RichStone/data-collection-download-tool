@@ -52,7 +52,6 @@ class Parser:
                 if self.range_delimiter in extracted_range:
                     range_obj = dict()
                     split_range = extracted_range.split(self.range_delimiter)
-                    # TODO: check on split every range value to be numeric
                     range_obj['start_from'] = split_range[0]
                     range_obj['end_at'] = split_range[1]
                     ranges.append(range_obj)

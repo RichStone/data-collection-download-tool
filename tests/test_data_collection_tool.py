@@ -4,6 +4,8 @@ from urllib.error import URLError
 
 import os
 
+from tests import utils
+
 
 class TestUrlParser(unittest.TestCase):
     def setUp(self):
@@ -92,23 +94,80 @@ class TestDownloader(unittest.TestCase):
         # TODO: delete everything from downloads if exists
         pass
 
-    def test_build_download_start_url(self):
+    def test_build_download_url(self):
         start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
-        download_range = [
-            {'start_from': '0001', 'end_at': '0928'},
-        ]
+        download_range = ['0001']
         clean_download_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n0001.xml.gz'
         parsed_url = self.dl_handler.build_download_url(start_url, download_range)
         self.assertEqual(clean_download_url, parsed_url)
 
+    def test_build_download_url_multiple_wildcards(self):
         start_url = 'http://datagoodie.com/month/###/day/###'
-        download_range = [
-            {'start_from': '1', 'end_at': '12'},
-            {'start_from': '1', 'end_at': '30'}
-        ]
+        download_range = ['1', '1']
         clean_download_url = 'http://datagoodie.com/month/1/day/1'
         parsed_url = self.dl_handler.build_download_url(start_url, download_range)
         self.assertEqual(clean_download_url, parsed_url)
+
+    def test_get_starts_from_ranges_with_single_range(self):
+        ranges = [
+            {'start_from': '0001', 'end_at': '0928'},
+        ]
+        extracted_starts = self.dl_handler.get_start_indices_from_ranges(ranges)
+        target_starts = [1]
+        self.assertEqual(target_starts, extracted_starts)
+
+    def test_get_starts_from_ranges_with_multiple_ranges(self):
+        ranges = [
+            {'start_from': '1', 'end_at': '12'},
+            {'start_from': '15', 'end_at': '30'}
+        ]
+        extracted_starts = self.dl_handler.get_start_indices_from_ranges(ranges)
+        target_starts = [1, 15]
+        self.assertEqual(target_starts, extracted_starts)
+
+    def test_get_end_at_ranges_with_single_range(self):
+        ranges = [
+            {'start_from': '0001', 'end_at': '0928'},
+        ]
+        extracted_starts = self.dl_handler.get_end_at_indices_from_ranges(ranges)
+        target_starts = [928]
+        self.assertEqual(target_starts, extracted_starts)
+
+    def test_get_end_at_ranges_with_multiple_ranges(self):
+        ranges = [
+            {'start_from': '1', 'end_at': '12'},
+            {'start_from': '15', 'end_at': '30'}
+        ]
+        extracted_starts = self.dl_handler.get_end_at_indices_from_ranges(ranges)
+        target_starts = [12, 30]
+        self.assertEqual(target_starts, extracted_starts)
+
+    def test_download_several_html_pages(self):
+        start_url = 'https://xkcd.com/###'
+        self.dl_handler.download()
+        path_to_downloads = '../downloads'
+        downloaded_files = utils.get_all_file_names_from_directory(path_to_downloads)
+        expected_files = ['xkcd1.com.html', 'xkcd2.html', 'xkcd3.html']
+        self.assertEqual(expected_files, downloaded_files)
+
+    @unittest.skip('later')
+    def test_zfill(self):
+        pass
+
+    @unittest.skip('later')
+    def test_build_download_range_multiple_wildcards(self):
+        start_url = 'https://datagoodie.com/month/###/day/###'
+        download_range = [
+            {'start_from': '1', 'end_at': '3'},
+            {'start_from': '15', 'end_at': '18'}
+        ]
+
+    @unittest.skip('later')
+    def test_build_download_range_with_protruding_zeros(self):
+        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
+        download_range = [
+            {'start_from': '0001', 'end_at': '0928'},
+        ]
 
     def test_ranges_delimiters_should_be_same_between_parser_and_downloader(self):
         parser = url_argument_parser.Parser()
@@ -117,16 +176,16 @@ class TestDownloader(unittest.TestCase):
         self.assertEqual(downloader_wildcard, parser_wildcard)
 
     @unittest.skip('later')
-    def test_should_raise_exception_gracefully_when_url_not_downloadable(self):
-        pass
-
-    @unittest.skip('later')
     def test_download_first_file_with_clean_simple_start_url(self):
         url = 'https://xkcd.com/1'
         download_target_file_name = 'xkcd1.html'
         # get first file in
         download_actual_file_name = os.listdir(os.getcwd() + '/downloads')[0]
         self.assertEqual(download_target_file_name, download_actual_file_name)
+
+    @unittest.skip('later')
+    def test_should_raise_exception_gracefully_when_url_not_downloadable(self):
+        pass
 
 
 if __name__ == '__main__':
