@@ -91,8 +91,11 @@ class TestDownloader(unittest.TestCase):
         self.dl_handler = downloader.Downloader(url_argument_parser.Parser().final_url_wildcard)
 
     def tearDown(self):
-        # TODO: delete everything from downloads if exists
-        pass
+        # remove downloaded files
+        downloaded_files = utils.get_all_file_names_from_directory(self.dl_handler.download_path)
+        if downloaded_files:
+            for file in downloaded_files:
+                os.unlink(os.path.join(self.dl_handler.download_path, file))
 
     def test_build_download_url(self):
         start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
