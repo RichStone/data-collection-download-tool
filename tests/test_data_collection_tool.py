@@ -110,9 +110,11 @@ class TestDownloader(unittest.TestCase):
         parsed_url = self.dl_handler.build_download_url(start_url, download_range)
         self.assertEqual(clean_download_url, parsed_url)
 
-    @unittest.skip('later')
     def test_ranges_delimiters_should_be_same_between_parser_and_downloader(self):
-        pass
+        parser = url_argument_parser.Parser()
+        parser_wildcard = parser.final_url_wildcard
+        downloader_wildcard = self.dl_handler.range_wildcard
+        self.assertEqual(downloader_wildcard, parser_wildcard)
 
     @unittest.skip('later')
     def test_should_raise_exception_gracefully_when_url_not_downloadable(self):
