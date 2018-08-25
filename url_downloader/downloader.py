@@ -8,6 +8,8 @@ class Downloader:
         self.range_wildcard = range_wildcard
         downloader_directory = os.path.dirname(__file__)
         self.download_path = os.path.join(downloader_directory, '../downloads/')
+        # place longer suffixes at the beginning, order matters!
+        self.important_suffixes = ('.tar.gz', '.xml.gz', '.zip', '.tar', '.html')
 
     def download(self, start_url, ranges):
         start_from_indices = self.get_start_indices_from_ranges(ranges)
@@ -39,8 +41,7 @@ class Downloader:
             end_at.append(int(r['end_at']))
         return end_at
 
-    @staticmethod
-    def get_target_file_name(url, index):
+    def get_target_file_name(self, url, index):
         split_url = urlsplit(url)
         # get the domain/top level domain part of url
         file_name = split_url.netloc
@@ -48,7 +49,16 @@ class Downloader:
         file_name = file_name.replace('/', '-')
         # join with currently downloaded index
         file_name = str(index) + '-' + file_name
+
+        if url.endswith(self.important_suffixes):
+            important_suffix = self.get_important_suffix(url)
+            file_name += important_suffix
         return file_name
+
+    def get_important_suffix(self, url):
+        for suffix in self.important_suffixes:
+            if suffix in url:
+                return suffix
 
     @staticmethod
     def get_zfill_amount(ranges):

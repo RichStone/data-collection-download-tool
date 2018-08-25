@@ -88,7 +88,7 @@ class TestUrlParser(unittest.TestCase):
 
 class TestDownloader(unittest.TestCase):
     def setUp(self):
-        self.dl_handler = downloader.Downloader(url_argument_parser.Parser().final_url_wildcard)
+        self.dl_handler = downloader.Downloader(url_argument_parser.Parser().final_url_range_wildcard)
 
     def tearDown(self):
         # remove downloaded files
@@ -145,6 +145,7 @@ class TestDownloader(unittest.TestCase):
         target_starts = [12, 30]
         self.assertEqual(target_starts, extracted_starts)
 
+    # @unittest.skip('skip during test phases, because of long download times')
     def test_download_several_html_pages_single_range(self):
         start_url = 'https://xkcd.com/###'
         ranges = [
@@ -157,6 +158,7 @@ class TestDownloader(unittest.TestCase):
         expected_files = {'1-xkcd.com', '2-xkcd.com', '3-xkcd.com'}
         self.assertEqual(expected_files, downloaded_files)
 
+    # @unittest.skip('skip during test phases, because of long download times')
     def test_download_several_files_with_leading_zeros_in_range(self):
         start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
         ranges = [
@@ -167,20 +169,24 @@ class TestDownloader(unittest.TestCase):
         # convert to set because order should not matter for equality at assert
         downloaded_files = set(downloaded_files)
         expected_files = {
-            '1-ftp.ncbi.nlm.nih.gov',
-            '2-ftp.ncbi.nlm.nih.gov'
+            '1-ftp.ncbi.nlm.nih.gov.xml.gz',
+            '2-ftp.ncbi.nlm.nih.gov.xml.gz'
         }
         self.assertEqual(expected_files, downloaded_files)
-
 
     def test_get_target_file_name(self):
         url = 'https://xkcd.com/1'
         file_name = self.dl_handler.get_target_file_name(url, 1)
         self.assertEqual('1-xkcd.com', file_name)
 
+    def test_get_target_file_name_with_important_suffix(self):
+        url = 'http://datagoodie.com/important-goodie.tar.gz'
+        file_name = self.dl_handler.get_target_file_name(url, 1)
+        self.assertEqual('1-datagoodie.com.tar.gz', file_name)
+
     def test_ranges_delimiters_should_be_same_between_parser_and_downloader(self):
         parser = url_argument_parser.Parser()
-        parser_wildcard = parser.final_url_wildcard
+        parser_wildcard = parser.final_url_range_wildcard
         downloader_wildcard = self.dl_handler.range_wildcard
         self.assertEqual(downloader_wildcard, parser_wildcard)
 
