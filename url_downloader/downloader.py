@@ -13,10 +13,11 @@ class Downloader:
         start_from_indices = self.get_start_indices_from_ranges(ranges)
         end_at_indices = self.get_end_at_indices_from_ranges(ranges)
         current_ranges = start_from_indices
+        zfill_amount = self.get_zfill_amount(ranges)
         # current_ranges[0] yields the currently needed index for the download
         print('########## Starting Download ##########')
         while current_ranges[0] <= end_at_indices[0]:
-            url = self.build_download_url(start_url, current_ranges)
+            url = self.build_download_url(start_url, current_ranges, zfill_amount)
             file_name = self.get_target_file_name(url, current_ranges[0])
             target_path = self.download_path + file_name
             print('Downloading from ' + url + ' to ' + target_path)
@@ -41,13 +42,34 @@ class Downloader:
     @staticmethod
     def get_target_file_name(url, index):
         split_url = urlsplit(url)
-        file_name = str(index) + '-' + split_url.netloc
+        # get the domain/top level domain part of url
+        file_name = split_url.netloc
+        # get rid of '/' for *nix filesystem compatibility
+        file_name = file_name.replace('/', '-')
+        # join with currently downloaded index
+        file_name = str(index) + '-' + file_name
         return file_name
 
-    def build_download_url(self, start_url, current_range):
+    @staticmethod
+    def get_zfill_amount(ranges):
+        """
+        If the range string starts with a '0', all chars must be counted in order to get a zfill value.
+
+        :param ranges: dict - contains the different ranges
+        :return: int - number of zeros to be filled in the target string
+        """
+        download_range = ranges[0]['start_from']
+        zfill_amount = 0
+        if download_range.startswith('0'):
+            for number in download_range:
+                zfill_amount += 1
+        return zfill_amount
+
+    def build_download_url(self, start_url, current_range, zfill_amount):
         """
         Replaces the wildcard delimiter with the current range number to be downloaded.
 
+        :param leading_zeros_in_range: int - amount of zeros to be prefixed to range
         :param start_url: string - custom url with wildcard to be dissected
         :param current_range: dict of ints - ranges to download
         :return: string - URL ready for download
@@ -55,7 +77,7 @@ class Downloader:
         split_url = start_url.split(self.range_wildcard)
         insert_index = 1
         for loop_index, r in enumerate(current_range):
-            split_url.insert(insert_index, str(current_range[loop_index]))
+            split_url.insert(insert_index, str(current_range[loop_index]).zfill(zfill_amount))
             insert_index += 2
         download_url = ''.join(split_url)
         return download_url

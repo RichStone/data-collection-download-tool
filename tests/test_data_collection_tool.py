@@ -101,14 +101,14 @@ class TestDownloader(unittest.TestCase):
         start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
         download_range = ['0001']
         clean_download_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n0001.xml.gz'
-        parsed_url = self.dl_handler.build_download_url(start_url, download_range)
+        parsed_url = self.dl_handler.build_download_url(start_url, download_range, 4)
         self.assertEqual(clean_download_url, parsed_url)
 
     def test_build_download_url_multiple_wildcards(self):
         start_url = 'http://datagoodie.com/month/###/day/###'
         download_range = ['1', '1']
         clean_download_url = 'http://datagoodie.com/month/1/day/1'
-        parsed_url = self.dl_handler.build_download_url(start_url, download_range)
+        parsed_url = self.dl_handler.build_download_url(start_url, download_range, 0)
         self.assertEqual(clean_download_url, parsed_url)
 
     def test_get_starts_from_ranges_with_single_range(self):
@@ -152,52 +152,37 @@ class TestDownloader(unittest.TestCase):
         ]
         self.dl_handler.download(start_url, ranges)
         downloaded_files = utils.get_all_file_names_from_directory(self.dl_handler.download_path)
-        # convert to set because order should not matter for equality
+        # convert to set because order should not matter for equality at assert
         downloaded_files = set(downloaded_files)
         expected_files = {'1-xkcd.com', '2-xkcd.com', '3-xkcd.com'}
         self.assertEqual(expected_files, downloaded_files)
+
+    def test_download_several_files_with_leading_zeros_in_range(self):
+        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
+        ranges = [
+            {'start_from': '0001', 'end_at': '0002'},
+        ]
+        self.dl_handler.download(start_url, ranges)
+        downloaded_files = utils.get_all_file_names_from_directory(self.dl_handler.download_path)
+        # convert to set because order should not matter for equality at assert
+        downloaded_files = set(downloaded_files)
+        expected_files = {
+            '1-ftp.ncbi.nlm.nih.gov',
+            '2-ftp.ncbi.nlm.nih.gov'
+        }
+        self.assertEqual(expected_files, downloaded_files)
+
 
     def test_get_target_file_name(self):
         url = 'https://xkcd.com/1'
         file_name = self.dl_handler.get_target_file_name(url, 1)
         self.assertEqual('1-xkcd.com', file_name)
 
-    @unittest.skip('when a use case is found')
-    def test_download_several_html_pages_with_multiple_ranges(self):
-        pass
-
-    @unittest.skip('later')
-    def test_zfill(self):
-        pass
-
-    @unittest.skip('later')
-    def test_build_download_range_multiple_wildcards(self):
-        start_url = 'https://datagoodie.com/month/###/day/###'
-        download_range = [
-            {'start_from': '1', 'end_at': '3'},
-            {'start_from': '15', 'end_at': '18'}
-        ]
-
-    @unittest.skip('later')
-    def test_build_download_range_with_protruding_zeros(self):
-        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
-        download_range = [
-            {'start_from': '0001', 'end_at': '0928'},
-        ]
-
     def test_ranges_delimiters_should_be_same_between_parser_and_downloader(self):
         parser = url_argument_parser.Parser()
         parser_wildcard = parser.final_url_wildcard
         downloader_wildcard = self.dl_handler.range_wildcard
         self.assertEqual(downloader_wildcard, parser_wildcard)
-
-    @unittest.skip('later')
-    def test_download_first_file_with_clean_simple_start_url(self):
-        url = 'https://xkcd.com/1'
-        download_target_file_name = 'xkcd1.html'
-        # get first file in
-        download_actual_file_name = os.listdir(os.getcwd() + '/downloads')[0]
-        self.assertEqual(download_target_file_name, download_actual_file_name)
 
     @unittest.skip('later')
     def test_should_raise_exception_gracefully_when_url_not_downloadable(self):
