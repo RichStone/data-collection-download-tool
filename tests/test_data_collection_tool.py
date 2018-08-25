@@ -142,13 +142,26 @@ class TestDownloader(unittest.TestCase):
         target_starts = [12, 30]
         self.assertEqual(target_starts, extracted_starts)
 
-    def test_download_several_html_pages(self):
+    def test_download_several_html_pages_single_range(self):
         start_url = 'https://xkcd.com/###'
-        self.dl_handler.download()
-        path_to_downloads = '../downloads'
-        downloaded_files = utils.get_all_file_names_from_directory(path_to_downloads)
-        expected_files = ['xkcd1.com.html', 'xkcd2.html', 'xkcd3.html']
+        ranges = [
+            {'start_from': '1', 'end_at': '3'},
+        ]
+        self.dl_handler.download(start_url, ranges)
+        downloaded_files = utils.get_all_file_names_from_directory(self.dl_handler.download_path)
+        # convert to set because order should not matter for equality
+        downloaded_files = set(downloaded_files)
+        expected_files = {'1-xkcd.com', '2-xkcd.com', '3-xkcd.com'}
         self.assertEqual(expected_files, downloaded_files)
+
+    def test_get_target_file_name(self):
+        url = 'https://xkcd.com/1'
+        file_name = self.dl_handler.get_target_file_name(url, 1)
+        self.assertEqual('1-xkcd.com', file_name)
+
+    @unittest.skip('when a use case is found')
+    def test_download_several_html_pages_with_multiple_ranges(self):
+        pass
 
     @unittest.skip('later')
     def test_zfill(self):
