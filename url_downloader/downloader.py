@@ -53,6 +53,9 @@ class Downloader:
         if url.endswith(self.important_suffixes):
             important_suffix = self.get_important_suffix(url)
             file_name += important_suffix
+        else:
+            # assume they are .html in all other cases
+            file_name += '.html'
         return file_name
 
     def get_important_suffix(self, url):

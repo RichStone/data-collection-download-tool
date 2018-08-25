@@ -13,7 +13,7 @@ class Parser:
         # regex needs delimiters to be escaped
         self.concat_delimiter_escaped = '\+\+'
         self.range_delimiter_escaped = '\*\*'
-        self.final_url_wildcard = '###'
+        self.final_url_range_wildcard = '###'
 
         self.ranges = dict()
         self.clean_url = ''
@@ -27,8 +27,10 @@ class Parser:
         custom_url_part = self.extract_custom_url_part(user_input)
         self.ranges = self.extract_ranges(custom_url_part)
         self.clean_url = self.build_final_url(self.ranges, user_input)
+        return self.clean_url, self.ranges
 
-    def extract_base_url(self, user_input):
+    @staticmethod
+    def extract_base_url(user_input):
         split_url = urlsplit(user_input)
         base_url = urlunsplit((split_url.scheme, split_url.netloc, '', '', ''))
         if validators.url(base_url) is validators.utils.ValidationFailure:
@@ -36,7 +38,8 @@ class Parser:
                              '"http://www.example.com/" ')
         return base_url
 
-    def extract_custom_url_part(self, user_input):
+    @staticmethod
+    def extract_custom_url_part(user_input):
         split_url = urlsplit(user_input)
         custom_part = urlunsplit(('', '', split_url.path, '', ''))
         return custom_part
@@ -57,7 +60,8 @@ class Parser:
                     ranges.append(range_obj)
             return ranges
 
-    def validate_base_url_connection(self, base_url):
+    @staticmethod
+    def validate_base_url_connection(base_url):
         try:
             return urllib.request.urlopen(base_url).getcode()
         except URLError:
@@ -76,7 +80,7 @@ class Parser:
         split_url = user_input.split(self.concat_delimiter)
         split_index = 1
         for r in ranges:
-            split_url[split_index] = self.final_url_wildcard
+            split_url[split_index] = self.final_url_range_wildcard
             split_index += 2
         clean_url = ''.join(s for s in split_url)
         return clean_url
