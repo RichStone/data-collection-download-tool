@@ -155,7 +155,7 @@ class TestDownloader(unittest.TestCase):
         downloaded_files = utils.get_all_file_names_from_directory(self.dl_handler.download_path)
         # convert to set because order should not matter for equality at assert
         downloaded_files = set(downloaded_files)
-        expected_files = {'1-xkcd.com', '2-xkcd.com', '3-xkcd.com'}
+        expected_files = {'1-xkcd.com.html', '2-xkcd.com.html', '3-xkcd.com.html'}
         self.assertEqual(expected_files, downloaded_files)
 
     # @unittest.skip('skip during test phases, because of long download times')
@@ -177,7 +177,7 @@ class TestDownloader(unittest.TestCase):
     def test_get_target_file_name(self):
         url = 'https://xkcd.com/1'
         file_name = self.dl_handler.get_target_file_name(url, 1)
-        self.assertEqual('1-xkcd.com', file_name)
+        self.assertEqual('1-xkcd.com.html', file_name)
 
     def test_get_target_file_name_with_important_suffix(self):
         url = 'http://datagoodie.com/important-goodie.tar.gz'
