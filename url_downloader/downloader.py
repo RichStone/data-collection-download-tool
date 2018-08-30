@@ -1,6 +1,7 @@
 import os
 import urllib.request
 from urllib.parse import urlsplit
+from urllib.error import HTTPError
 
 
 class Downloader:
@@ -23,7 +24,10 @@ class Downloader:
             file_name = self.get_target_file_name(url, current_ranges[0])
             target_path = self.download_path + file_name
             print('Downloading from ' + url + ' to ' + target_path)
-            urllib.request.urlretrieve(url, target_path)
+            try:
+                urllib.request.urlretrieve(url, target_path)
+            except HTTPError:
+                print('Skip range index ' + str(current_ranges[0]) + ' for URL: ' + url)
             current_ranges[0] += 1
         print('########## Download Finished ##########')
 
