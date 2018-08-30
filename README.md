@@ -10,47 +10,32 @@ be the way to go. You will need a fairly static URL, where just an index counts 
 
 ## Installation Examples
 
-OS X & Linux:
+OS X & Linux & Windows:
 
 ```sh
-# clone the project and install requirements into a virtual environment
+# clone the project and head over to the main directory
 git clone https://github.com/RichStone/data-collection-download-tool.git
 cd data-collection-download-tool
-python3 -m venv venv
-pip3 install --upgrade setuptools pip
-source venv/bin/activate
-pip3 install -r requirements.txt
+# from here you can run the download.py script, which is described in section "Usage Examples"
 ```
 
-Windows(not tested yet):
-
-```sh
-# clone the project and install requirements into a virtual environment
-git clone https://github.com/RichStone/data-collection-download-tool.git
-cd data-collection-download-tool
-python3 -m venv venv
-pip3 install --upgrade setuptools pip
-# you will probably need to make the "source" command available iny our cmd (e.g. by using Powershell/GitBash instead of cmd)
-source venv/Scripts/activate
-pip3 install -r requirements.txt
-```
 
 ## Usage Examples
-
-This will download every xkcd HTML page from `https://xkcd.com/1` to `https://xkcd.com/2000`:
 
 ```
 python3 download.py https://xkcd.com/++1**2000++
 ```
 
+This will download every xkcd HTML page from `https://xkcd.com/1` to `https://xkcd.com/2000`
+
 You just need to connect the dynamic part of your URL by starting `++` and ending `++`. In between you must define a 
-download range using integers and delimiting them by `**`
+download range using integers and delimiting them by `**`.
 
 In more detail:
 
 #### Get HTML pages
 
-*(note: I took xkcd just a simple example to make clear how the tool works. If you want all xkcd images scraped from the 
+*(note: I took xkcd just a simple example to make clear, how the tool works. If you want all xkcd images scraped from the 
 website, you would rather use a library like BeautifulSoup to get them on the fly.)*
 
 URLs, where the pictures are located:
@@ -105,14 +90,16 @@ Distributed under MIT license. See ``LICENSE.txt`` for more information.
 Of course it would be great to keep the tool test-driven ;)
 
 ## Possible Future Features
-- get really dynamic URLs
+- get really dynamic URLs (e.g. walk through a page and get all its URLs)
 - exclude some ranges/files from download
 - custom file naming/endings
-- unzip option
+- custom download directory
+- automatic unzip option
 - adding headers and sleep option for sensitive URLs
 - GUI 🌈
 
 Just let me know what you need for your use case or help me refining this tool.
+I would love to know about your use cases and refine the tool.
 
 ## Necessary Code Refactoring
 - factor parsing elements out of downloader.py
