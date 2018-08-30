@@ -3,8 +3,6 @@ import urllib.request
 from urllib.error import URLError
 import re
 
-import validators
-
 
 class Parser:
     def __init__(self):
@@ -31,11 +29,13 @@ class Parser:
 
     @staticmethod
     def extract_base_url(user_input):
-        split_url = urlsplit(user_input)
+        try:
+            split_url = urlsplit(user_input)
+        except ValueError:
+            raise ValueError(
+                'Splitting URL failed. Check you did something wrong here: '
+                'https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlsplit')
         base_url = urlunsplit((split_url.scheme, split_url.netloc, '', '', ''))
-        if validators.url(base_url) is validators.utils.ValidationFailure:
-            raise ValueError('Base URL is malformed, please keep to the following format: '
-                             '"http://www.example.com/" ')
         return base_url
 
     @staticmethod
@@ -46,8 +46,8 @@ class Parser:
 
     def extract_ranges(self, custom_url_part):
         ranges = []
-        extracted_ranges = re.findall(r'(?<=' + self.concat_delimiter_escaped + ').+?(?=' + self.concat_delimiter_escaped + ')',
-                                      custom_url_part)
+        extracted_ranges = re.findall(
+            r'(?<=' + self.concat_delimiter_escaped + ').+?(?=' + self.concat_delimiter_escaped + ')', custom_url_part)
         if not extracted_ranges:
             raise ValueError('You did not provide the accepted syntax for the URL path.')
         else:
@@ -67,6 +67,9 @@ class Parser:
         except URLError:
             raise URLError('Terminate program because connection could not be established with the given base URL '
                            + base_url)
+        except ValueError:
+            raise ValueError('Base URL "' + base_url + '" is malformed, please keep to the following format: '
+                             '"http://www.example.com/path/to/download++100**5000++"')
 
     def build_final_url(self, ranges, user_input):
         """
