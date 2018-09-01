@@ -6,7 +6,7 @@
 Whether you need to download a huge data dump or hundreds of HTML pages to analyze them locally, this tool might 
 be the way to go. You will need a fairly static URL, where just an index counts up for every new file.
 
-![download icon](download-icon.svg)
+![download icon](data-collection-banner.jpeg)
 
 ## Installation Examples
 
@@ -104,3 +104,6 @@ I would love to know about your use cases and refine the tool.
 ## Necessary Code Refactoring
 - factor parsing elements out of downloader.py
 - solve wildcard dependency between Parser und Downloader elegantly
+
+## Code Metrics
+[Blog article about the Data Collection Tool](http://datagoodie.com/blog/introducing-data-collection-tool)
