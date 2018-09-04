@@ -1,5 +1,5 @@
 # Product Name
-> Download data, HTML pages and whatever you like from static URLs
+> Download data, HTML pages and whatever you like from fairly static URLs
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -62,7 +62,7 @@ Installation is the same as described in "Installation Examples" above.
 
 Python's unittest module is used for the tests. To run the tests from the commandline:
 ```sh
-export PYTHONPATH=/your/path/to/data-collection-download-tool/
+export PYTHONPATH=$PYTHONPATH/your/own/path/to/data-collection-download-tool/
 python3 tests/test_data_collection_tool.py
 ```
 
