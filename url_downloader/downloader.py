@@ -7,8 +7,7 @@ from urllib.error import HTTPError
 class Downloader:
     def __init__(self, range_wildcard):
         self.range_wildcard = range_wildcard
-        downloader_directory = os.path.dirname(__file__)
-        self.download_path = os.path.join(downloader_directory, '../downloads/')
+        self.download_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'downloads'))
         # place longer suffixes at the beginning, order matters!
         self.important_suffixes = ('.tar.gz', '.xml.gz', '.zip', '.tar', '.html')
 
@@ -22,7 +21,7 @@ class Downloader:
         while current_ranges[0] <= end_at_indices[0]:
             url = self.build_download_url(start_url, current_ranges, zfill_amount)
             file_name = self.get_target_file_name(url, current_ranges[0])
-            target_path = self.download_path + file_name
+            target_path = os.path.join(self.download_path, file_name)
             print('Downloading from ' + url + ' to ' + target_path)
             try:
                 urllib.request.urlretrieve(url, target_path)
