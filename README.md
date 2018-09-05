@@ -2,7 +2,7 @@
 > Download data, HTML pages and whatever you like from fairly static URLs
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=datagdoodie&url=https://github.com/RichStone/&title=data-collection-download-tool&language=python&tags=github&category=software)
+<a href="https://flattr.com/submit/auto?user_id=datagoodie&url=https%3A%2F%2Fgithub.com%2FRichStone%2Fdata-collection-download-tool" target="_blank"><img src="https://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
 
 Whether you need to download a huge data dump or hundreds of HTML pages to analyze them locally, this tool might 
 be the way to go. You will need a fairly static URL, where just an index counts up for every new file.
