@@ -50,6 +50,10 @@ class TestUrlParser(unittest.TestCase):
         user_input = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed++0001**0928++.xml.gz'
         self.assertEqual('/pubmed/baseline/pubmed++0001**0928++.xml.gz', self.parser.extract_custom_url_part(user_input))
 
+    def test_extract_custom_part_with_queries_in_url_path(self):
+        user_input = 'http://www.harkavagrant.com/index.php?id=++1**4++'
+        self.assertEqual('/index.php?id=++1**4++', self.parser.extract_custom_url_part(user_input))
+
     def test_extract_ranges(self):
         custom_url_part = '/pubmed++0001**0928++.xml.gz'
         ranges = [{

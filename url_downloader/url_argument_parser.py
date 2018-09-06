@@ -41,7 +41,7 @@ class Parser:
     @staticmethod
     def extract_custom_url_part(user_input):
         split_url = urlsplit(user_input)
-        custom_part = urlunsplit(('', '', split_url.path, '', ''))
+        custom_part = urlunsplit(('', '', split_url.path, split_url.query, ''))
         return custom_part
 
     def extract_ranges(self, custom_url_part):
