@@ -1,12 +1,14 @@
 # Product Name
-> Download data, HTML pages and whatever you like from static URLs
+> Download data, HTML pages and whatever you like from fairly static URLs
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<a href="https://flattr.com/submit/auto?user_id=datagoodie&url=https%3A%2F%2Fgithub.com%2FRichStone%2Fdata-collection-download-tool" target="_blank"><img src="https://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
 
 Whether you need to download a huge data dump or hundreds of HTML pages to analyze them locally, this tool might 
 be the way to go. You will need a fairly static URL, where just an index counts up for every new file.
 
-![download icon](data-collection-banner.jpeg)
+![download banner](data-collection-banner.jpeg)
+
 
 ## Installation Examples
 
@@ -62,7 +64,7 @@ Installation is the same as described in "Installation Examples" above.
 
 Python's unittest module is used for the tests. To run the tests from the commandline:
 ```sh
-export PYTHONPATH=/your/path/to/data-collection-download-tool/
+export PYTHONPATH=$PYTHONPATH/your/own/path/to/data-collection-download-tool/
 python3 tests/test_data_collection_tool.py
 ```
 
