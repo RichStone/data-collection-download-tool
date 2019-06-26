@@ -108,4 +108,5 @@ I would love to know about your use cases and refine the tool.
 - solve wildcard dependency between Parser und Downloader elegantly
 
 ## Code Metrics
+[Blog article about the amazingness of TDD](https://datagoodie.com/blog/data-collection-tool-tdd-process/)
 [Blog article about the Data Collection Tool](http://datagoodie.com/blog/introducing-data-collection-tool)
