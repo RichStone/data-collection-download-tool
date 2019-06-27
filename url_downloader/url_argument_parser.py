@@ -34,7 +34,8 @@ class Parser:
         except ValueError:
             raise ValueError(
                 'Splitting URL failed. Check you did something wrong here: '
-                'https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlsplit')
+                'https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlsplit'
+            )
         base_url = urlunsplit((split_url.scheme, split_url.netloc, '', '', ''))
         return base_url
 
@@ -47,29 +48,32 @@ class Parser:
     def extract_ranges(self, custom_url_part):
         ranges = []
         extracted_ranges = re.findall(
-            r'(?<=' + self.concat_delimiter_escaped + ').+?(?=' + self.concat_delimiter_escaped + ')', custom_url_part)
+            r'(?<={0}).+?(?={0})'.format(self.concat_delimiter_escaped),
+            custom_url_part,
+        )
+
         if not extracted_ranges:
             raise ValueError('You did not provide the accepted syntax for the URL path.')
-        else:
-            for extracted_range in extracted_ranges:
-                if self.range_delimiter in extracted_range:
-                    range_obj = dict()
-                    split_range = extracted_range.split(self.range_delimiter)
-                    range_obj['start_from'] = split_range[0]
-                    range_obj['end_at'] = split_range[1]
-                    ranges.append(range_obj)
-            return ranges
+
+        for extracted_range in extracted_ranges:
+            if self.range_delimiter in extracted_range:
+                range_obj = dict()
+                split_range = extracted_range.split(self.range_delimiter)
+                range_obj['start_from'] = split_range[0]
+                range_obj['end_at'] = split_range[1]
+                ranges.append(range_obj)
+        return ranges
 
     @staticmethod
     def validate_base_url_connection(base_url):
         try:
             return urllib.request.urlopen(base_url).getcode()
         except URLError:
-            raise URLError('Terminate program because connection could not be established with the given base URL '
-                           + base_url)
+            raise URLError('Terminate program because connection could not be established with the given base URL {}'
+                           .format(base_url))
         except ValueError:
-            raise ValueError('Base URL "' + base_url + '" is malformed, please keep to the following format: '
-                             '"http://www.example.com/path/to/download++100**5000++"')
+            raise ValueError('Base URL {} is malformed, please keep to the following format: '
+                             '"http://www.example.com/path/to/download++100**5000++"'.format(base_url))
 
     def build_final_url(self, ranges, user_input):
         """
