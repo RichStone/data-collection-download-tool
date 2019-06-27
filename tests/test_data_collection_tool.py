@@ -149,7 +149,7 @@ class TestDownloader(unittest.TestCase):
         target_starts = [12, 30]
         self.assertEqual(target_starts, extracted_starts)
 
-    @unittest.skip('skip during test phases, because of long download waiting times')
+    # @unittest.skip('skip during test phases, because of long download waiting times')
     def test_download_several_html_pages_single_range(self):
         start_url = 'https://xkcd.com/###'
         ranges = [

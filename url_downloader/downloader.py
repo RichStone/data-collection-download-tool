@@ -8,7 +8,7 @@ class Downloader:
     def __init__(self, range_wildcard):
         self.range_wildcard = range_wildcard
         self.download_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'downloads'))
-        # place longer suffixes at the beginning, order matters!
+        # place longer chained suffixes at the beginning
         self.important_suffixes = ('.tar.gz', '.xml.gz', '.zip', '.tar', '.html')
 
     def download(self, start_url, ranges):

@@ -55,10 +55,10 @@ class Parser:
         if not extracted_ranges:
             raise ValueError('You did not provide the accepted syntax for the URL path.')
 
-        for extracted_range in extracted_ranges:
-            if self.range_delimiter in extracted_range:
+        for _range in extracted_ranges:
+            if self.range_delimiter in _range:
                 range_obj = dict()
-                split_range = extracted_range.split(self.range_delimiter)
+                split_range = _range.split(self.range_delimiter)
                 range_obj['start_from'] = split_range[0]
                 range_obj['end_at'] = split_range[1]
                 ranges.append(range_obj)
