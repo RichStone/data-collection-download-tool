@@ -102,9 +102,9 @@ class TestDownloader(unittest.TestCase):
                 os.unlink(os.path.join(self.dl_handler.download_path, file))
 
     def test_build_download_url(self):
-        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
+        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed19n###.xml.gz'
         download_range = ['0001']
-        clean_download_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n0001.xml.gz'
+        clean_download_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed19n0001.xml.gz'
         parsed_url = self.dl_handler.build_download_url(start_url, download_range, 4)
         self.assertEqual(clean_download_url, parsed_url)
 
@@ -149,7 +149,7 @@ class TestDownloader(unittest.TestCase):
         target_starts = [12, 30]
         self.assertEqual(target_starts, extracted_starts)
 
-    # @unittest.skip('skip during test phases, because of long download waiting times')
+    @unittest.skip('skip during test phases, because of long download waiting times')
     def test_download_several_html_pages_single_range(self):
         start_url = 'https://xkcd.com/###'
         ranges = [
@@ -164,7 +164,7 @@ class TestDownloader(unittest.TestCase):
 
     # @unittest.skip('skip during test phases, because of long download waiting times')
     def test_download_several_files_with_leading_zeros_in_range(self):
-        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed18n###.xml.gz'
+        start_url = 'https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed19n###.xml.gz'
         ranges = [
             {'start_from': '0001', 'end_at': '0002'},
         ]
@@ -208,7 +208,6 @@ class TestDownloader(unittest.TestCase):
             self.assertEqual(expected_files, downloaded_files)
         except HTTPError:
             self.fail("Download raised HTTPError unexpectedly!")
-
 
 
 if __name__ == '__main__':
